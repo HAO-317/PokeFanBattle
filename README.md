@@ -66,7 +66,7 @@ To run the game locally on your machine, follow these steps:
 
 
 ## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/HAO-317/PokeFanBattle/blob/main/LICENCE) file for details.
 
 ## Copyright
 © 2025 [HAO LI / HAO317]. All rights reserved.   
