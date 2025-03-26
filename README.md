@@ -3,6 +3,8 @@
 Welcome to **PokéFan Battle Game**, a web-based game inspired by the classic PokéFan universe! This game offers an engaging experience where players can challenge a CPU opponent in a strategic battle, choosing between different game modes and difficulty levels. With a retro pixel-art style, immersive sound effects, and dynamic animations, this game brings the thrill of PokéFan battles to your browser.
 
 ![Homepage](game_homepage.png)
+Enjoy this Game! 
+https://hao-317.github.io/PokeFanBattle/
 
 ## Table of Contents
 - [Game Overview](#game-overview)
