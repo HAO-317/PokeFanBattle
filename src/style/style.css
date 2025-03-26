@@ -1,0 +1,1190 @@
+/*
+ * PokéFan Battle Game
+ * Copyright © 2025 [HAO Li / HAO317]
+ * Licensed under the MIT License (or All Rights Reserved)
+ * v1.0
+ */
+
+@font-face {
+  font-family: "pixelify Sans";
+  src: local("pixelify Sans");
+}
+@font-face {
+  font-family: "Alegreya Sans";
+  src: local("Alegreya Sans");
+}
+
+:root {}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 1rem;
+  font-size: 62.5%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body {
+  font-family: "pixelify Sans";
+  letter-spacing:0.1rem;
+  padding: 0px;
+  background-color: #031031;
+  width: 1000px;
+  min-width: 680px;
+  margin: 0;
+}
+
+.game-area {
+  position: relative;
+  border: 5px solid #137a7a;
+  border-radius: 5px;
+  padding: 0;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* 音效控制图标 */
+.sound-control {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  text-align: center;
+  line-height: 30px;
+  background: url('/Assets/Img/music-_640.png') rgba(255, 255, 255, 0.538);
+  background-size: 75%;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.316);
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s;
+}
+
+.sound-control:hover {
+  background-color: rgba(0, 255, 221, 0.5);
+  filter: contrast(2);
+}
+
+.sound-control.muted {
+  background-color: rgba(255, 25, 0, 0.516);
+}
+
+/* 文字样式 */
+h2 {
+  color: #ffea00;
+  margin: 0;
+  font-size: 2rem;
+  text-shadow: 2px 2px 10px #000000;
+  animation: h2mov 1s infinite ease-in-out;
+}
+
+@keyframes h2mov {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1);}
+}
+
+h3 {
+  color: #ffea00;
+  margin: 0;
+  font-size: 1.9rem;
+  text-shadow: 2px 2px 10px #000000;
+}
+
+p {
+  font-size: 1.5rem;
+  margin: 5px 0;
+  color: #00ffe1;
+  text-shadow: 0 0 5px black;
+}
+
+/* 统一按钮样式 */
+button {
+  width: 120px;
+  height: 40px;
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 1.6rem;
+  font-weight: bold;
+  font-family: "pixelify Sans";
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 1px 1px 10px rgba(162, 255, 1, 0.944);
+  background-color: #25a9b0;
+  border: 2px solid rgba(255, 255, 255, 0.74);
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover {
+  background-color: #d1ce4d;
+  color: rgb(0, 85, 255);
+  transform: scale(1.1);
+  border: 2px solid rgba(0, 255, 255, 0.74);
+}
+
+/* 模式选择按钮容器 */
+.mode-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* 目标选项样式 */
+.goal-options {
+  margin-top: 20px;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.goal-options.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-container {
+  max-height: 0;
+  overflow-y: auto;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.74);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-shadow: 1px 1px 10px rgba(162, 255, 1, 0.944);
+  transition: max-height 0.5s ease;
+}
+
+.goal-options.visible .scroll-container {
+  max-height: 80px;
+}
+
+.goal-option {
+  width: 120px;
+  height: 40px;
+  background-color: #2196F3;
+}
+
+.goal-option:hover {
+  background-color: #1976D2;
+  color: rgb(0, 85, 255);
+  transform: scale(1.1);
+  border: 2px solid rgba(0, 255, 255, 0.74);
+}
+
+.goal-option.selected {
+  background-color: #FF5722;
+  color: white;
+}
+
+/* 难度选择容器（仅用于 INFINITY 模式） */
+.difficulty-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.difficulty-btn {
+  width: 120px;
+  height: 40px;
+  padding: 10px 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 1px 1px 10px rgba(162, 255, 1, 0.944);
+  background-color: #25a9b0;
+  border: 2px solid rgba(255, 255, 255, 0.74);
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.difficulty-btn:hover {
+  background-color: #d1ce4d;
+  color: rgb(0, 85, 255);
+  transform: scale(1.1);
+  border: 2px solid rgba(0, 255, 255, 0.74);
+}
+
+.difficulty-btn.selected {
+  background-color: #FF5722;
+  transform: scale(1.1);
+}
+
+/* Start 和 Restart 按钮 */
+#start, #restart {
+  width: 200px;
+  height: 40px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#start {
+  margin-top: 0px;
+}
+
+#restart {
+  margin-top: 35px;
+}
+
+/* 隐藏类 */
+.hidden {
+  display: none !important;}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 区域1 - 开始界面 */
+#startScreen {
+  border-color: #11bca8;
+  background: radial-gradient(circle, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 100%), url('/Assets/Img/pokemon-collage.jpg');
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  transition: transform 0.2s ease-in;
+  animation: slowZoom 40s ease-in-out infinite; /* 添加缩放动画 */
+}
+
+/* 定义动画 */
+@keyframes slowZoom {
+  0% {
+    background-size: 100% 100%; /* 1倍 */
+  }
+  50% {
+    background-size: 150% 150%; /* 1.3倍 */
+  }
+  100% {
+    background-size: 100% 100%; /* 返回 1倍 */
+  }
+}
+
+
+#startScreen2 {
+  height: 600px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.title-logo {
+  background-image: url('/Assets/Img/title-logo.png');
+  background-size: cover;
+  background-position: center;
+  width: 80%;
+  aspect-ratio: 5 / 3;
+  margin-bottom: -15%;
+  animation: breathe2 2s infinite ease-in-out;
+}
+
+@keyframes breathe2 {
+  0% { filter: drop-shadow(1px 1px 10px rgba(0, 251, 255, 0.713)); }
+  50% { filter: drop-shadow(2px 2px 12px rgba(89, 0, 255, 0.713)); }
+  100% { filter: drop-shadow(1px 1px 10px rgba(0, 251, 255, 0.713)); }
+}
+
+.ball {
+  background-image: url('/Assets/Img/ball.png');
+  background-size: cover;
+  background-position: center;
+  height: 12%;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 20px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s ease;
+  filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.5));
+}
+
+.ball:hover {
+  animation: jump 0.7s infinite;
+}
+
+@keyframes jump {
+  0% { transform: scale(1.05) translate(0, 0); filter: drop-shadow(5px 5px 10px rgba(0, 251, 255, 0.927)); }
+  25% { transform: translate(5px, -5px); filter: drop-shadow(5px 5px 6px rgba(88, 239, 252, 0.79)); }
+  50% { transform: scale(1.05) translate(-5px, 5px); filter: drop-shadow(5px 5px 10px rgba(0, 255, 204, 0.84)); }
+  75% { transform: translate(3px, -5px); filter: drop-shadow(5px 5px 10px rgba(123, 248, 255, 0.727)); }
+  100% { transform: scale(1.05) translate(0, 0); filter: drop-shadow(5px 5px 6px rgba(0, 255, 221, 0.914)); }
+}
+
+/* 区域2 - 游戏界面 */
+#gameScreen {
+  border-color: #f3a321;
+  background-image: url('/Assets/Img/bg_stadium.png');
+  background-size: cover;
+  background-position: center;
+  height: auto;
+  transition: transform 0.2s ease-in;
+}
+
+#gameScreen2 {
+  height: 600px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 记录区域 */
+.record {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  background: 
+    linear-gradient(90deg, rgba(158, 252, 243, 0) 0%, rgb(158, 252, 243, 0.15) 40%, rgba(0, 244, 213, 0) 60%),
+    linear-gradient(180deg, rgba(255, 217, 0, 0.15) 0%, rgba(0, 0, 255, 0.15) 100%);
+  background-size: 200% 100%, 100% 100%;
+  background-position: 0% 50%, 50% 50%;
+  animation: gradientFlow 5s linear infinite;
+  border-radius: 10px;
+  padding: 0 10px;
+  z-index: 3;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 0%; }
+}
+
+.record p {
+  color: #ffea00;
+  font-weight: bold;
+  font-size: 1.7rem;
+  display: inline-block;
+}
+
+.top-left, .top-right {
+  width: 25%;
+  text-align: left;
+}
+
+.top-right {
+  display: flex;
+  padding-right: 30px;
+  justify-content: end;
+  align-items: center;
+  gap: 5px;
+}
+
+#gamerule {
+  background: url('/Assets/Img/3_elements.png'), rgba(186, 186, 186, 0.438);
+  border-radius: 10%;
+  border: 2px solid rgba(209, 209, 209, 0.384);
+  width: 30px;
+  height: 30px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  transition: 0.3s ease-in;
+}
+
+#gamerule:hover {
+  transform: scale(5);
+  translate: -55px 55px;
+}
+
+#mainZone {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: -60px;
+}
+
+.lifeDisplay {
+  margin-top: 8px;
+  width: 32%;
+
+  height: auto;
+  min-height: 25px;
+}
+
+#playerlife, #cpulife {
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+#playerlife {
+  flex-direction: row;
+}
+
+.life-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px; /* 球和+1的间距 */
+}
+
+.ball-small {
+  background-image: url('/Assets/Img/ball.png');
+  background-size: cover;
+  background-position: center;
+  height: 25px;
+  aspect-ratio: 1 / 1;
+  transition: transform 0.2s ease;
+  filter: drop-shadow(0 1px 2px rgba(0, 235, 252, 0.88));
+  display: inline-block;
+  margin: 0 5px;
+}
+
+/* 生命球增加时的动画 */
+.ball-small.life-gain {
+  animation: lifeGain 1.5s ease-in-out forwards;
+}
+
+@keyframes lifeGain {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 1px 2px rgba(0, 235, 252, 0.88)) brightness(1);
+  }
+  15% {
+    transform: scale(1.3);
+    filter: drop-shadow(0 5px 10px rgba(255, 215, 0, 1)) brightness(1.5);
+  }
+  30% {
+    transform: scale(1);
+    filter: drop-shadow(0 3px 5px rgba(255, 215, 0, 0.8)) brightness(1.2);
+  }
+  45% {
+    transform: scale(1.3);
+    filter: drop-shadow(0 5px 10px rgba(255, 215, 0, 1)) brightness(1.5);
+  }
+  60% {
+    transform: scale(1);
+    filter: drop-shadow(0 3px 5px rgba(255, 215, 0, 0.8)) brightness(1.2);
+  }
+  75% {
+    transform: scale(1.3);
+    filter: drop-shadow(0 5px 10px rgba(255, 215, 0, 1)) brightness(1.5);
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 1px 2px rgba(0, 235, 252, 0.88)) brightness(1);
+  }
+}
+
+/* "+1" 文字样式和动画 */
+.plus-one {
+  color: #ffd700;
+  font-size: 2rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+  animation: plusOneFade 1.5s ease-in-out forwards;
+}
+
+@keyframes plusOneFade {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(1.2);
+  }
+}
+
+
+
+#roundResult {
+  text-align: center;
+  padding: 10px 0;
+  margin-top: 45px;
+  background-color: #7aebff1c;
+  border-radius: 15px;
+  border: 3px solid rgba(0, 255, 247, 0.186);
+  width: 25%;
+}
+
+#score-ply-cpu {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.player-score-vertikal {
+  width: 120px;
+}
+
+#playerScore, #cpuScore, .text-type2 {
+  font-size: 6rem;
+  color: white;
+  text-shadow: 1px 1px 5px rgb(0, 229, 255);
+}
+
+.text-type1 {
+  font-size: 1.8rem;
+  margin-bottom: 0;
+}
+
+.choice-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+.choice-display {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  animation: breathEffect 1.5s infinite ease-in-out;
+}
+
+@keyframes breathEffect {
+  0% { filter: drop-shadow(5px 5px 8px rgba(0, 191, 255, 0.461)); }
+  50% { filter: drop-shadow(5px 5px 15px rgba(0, 255, 242, 0.7)); }
+  100% { filter: drop-shadow(5px 5px 10px rgba(0, 191, 255, 0.461)); }
+}
+
+.effect-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.choice-appear {
+  animation: choiceAppear 0.5s ease-in-out forwards;
+}
+
+@keyframes choiceAppear {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+#versus {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+#vs {
+  background-image: url('/Assets/Img/vs.png');
+  width: 120px;
+  height: 120px;
+  background-size: cover;
+  background-position: center;
+  margin: 0 20px;
+  animation: shadowPulse2 1s infinite;
+  z-index: 10;
+}
+
+@keyframes shadowPulse2 {
+  0% { filter: drop-shadow(0 0 7px rgba(255, 0, 0, 0.6)) drop-shadow(0 0 7px rgba(0, 255, 0, 0.5)) drop-shadow(0 0 10px rgba(0, 0, 255, 0.4)); }
+  25% { filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.6)) drop-shadow(0 0 8px rgba(255, 165, 0, 0.6)) drop-shadow(0 0 15px rgba(0, 255, 255, 0.5)); }
+  50% { filter: drop-shadow(0 0 6px rgba(255, 0, 0, 0.6)) drop-shadow(0 0 12px rgba(255, 165, 0, 0.6)) drop-shadow(0 0 14px rgba(0, 255, 0, 0.5)); }
+  75% { filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.6)) drop-shadow(0 0 12px rgba(0, 255, 0, 0.6)) drop-shadow(0 0 14px rgba(0, 0, 255, 0.5)); }
+  100% { filter: drop-shadow(0 0 7px rgba(255, 0, 0, 0.6)) drop-shadow(0 0 7px rgba(0, 255, 0, 0.5)) drop-shadow(0 0 10px rgba(0, 0, 255, 0.4)); }
+}
+
+
+#playerVersus { background-image: url('/Assets/Img/choiced_a_400.png'); }
+#cpuVersus { background-image: url('/Assets/Img/choiced_a_cpu400.png'); }
+
+.strong { transform: scale(1.2); }
+.weak { transform: scale(0.8); opacity: 0.65; }
+
+#buttonZone {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 1px 0;
+}
+
+#objA, #objB, #objC, #objA-cpu, #objB-cpu, #objC-cpu {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 1px 1px 8px black;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#objA { background-image: url('/Assets/Img/icon_a_60.png'); }
+#objB { background-image: url('/Assets/Img/icon_b_60.png'); }
+#objC { background-image: url('/Assets/Img/icon_c_60.png'); }
+#objA-cpu { background-image: url('/Assets/Img/icon_a_60cpu.png'); }
+#objB-cpu { background-image: url('/Assets/Img/icon_b_60cpu.png'); }
+#objC-cpu { background-image: url('/Assets/Img/icon_c_60cpu.png'); }
+
+.playerChoice, .cpuChoice {
+  text-align: left;
+  width: 35%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.playerChoice h3, .cpuChoice h3 {
+  color: #ffffffbf;
+  writing-mode: vertical-rl;
+  text-align: center;
+  font-size: 2rem;
+  text-shadow: none;
+  background-color: #0044ff95;
+  padding: 5px;
+  box-shadow: 1px 1px 8px black;
+  transform: skew(0deg, 15deg);
+}
+
+.cpuChoice h3 {
+  writing-mode: vertical-lr;
+  background-color: #9d00ff95;
+  transform: skew(0deg, -15deg);
+}
+
+.playerChoice p, .cpuChoice p {
+  font-size: 1.8rem;
+  margin: 5px 0;
+  color: #00ffe1;
+  padding: 0 6px;
+  background: linear-gradient(120deg, rgba(200, 255, 0, 0.8), rgba(255, 255, 255, 0));
+}
+
+.cpuChoice p {
+  background: linear-gradient(-60deg, rgba(200, 255, 0, 0.8), rgba(255, 255, 255, 0));
+}
+
+/* 飞球样式 */
+.flying-ball {
+  position: absolute;
+  background-image: url('/Assets/Img/ball.png');
+  background-size: cover;
+  background-position: center;
+  width: 60px;
+  height: 60px;
+  aspect-ratio: 1 / 1;
+  z-index: 5;
+  pointer-events: none;
+  left: 10px;
+  bottom: 10px;
+}
+
+@keyframes flyArc {
+  0% {
+    transform: translate(0, 0) scale(1.3);
+    opacity: 0.3;
+    filter: drop-shadow(5px 5px 7px rgba(0, 0, 0, 0.85)) blur(0);
+  }
+  25% {
+    opacity: 1;
+    filter: blur(8px);
+    filter: drop-shadow(2px 100px 5px rgba(0, 0, 0, 0.7));
+  }
+  100% {
+    transform: var(--fly-end-transform);
+    opacity: 1;
+    filter: drop-shadow(2px 20px 5px rgba(0, 0, 0, 0.5)) blur(4px);
+  }
+}
+
+@keyframes vanishEffect {
+  0% {
+    opacity: 1;
+    transform: var(--fly-end-transform);
+    filter: brightness(1.2) contrast(1.5) hue-rotate(20deg) saturate(2) sepia(0.5);
+  }
+  50% {
+    opacity: 0.5;
+    transform: var(--vanish-mid-transform);
+    filter: brightness(1.2) contrast(1.5) hue-rotate(60deg) saturate(2) sepia(0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: var(--vanish-end-transform);
+    filter: brightness(1.2) contrast(1.5) hue-rotate(90deg) saturate(2) sepia(0.5);
+  }
+}
+
+/* 区域3 - 结束界面 */
+#endScreen {
+  background-image: url('/Assets/Img/bg.png');
+  background-size: 150%;
+  background-position: center;
+  height: auto;
+  width: 100%;
+  border-color: #F44336;
+  transition: transform 0.2s ease-in;
+  animation: slowZooEnd 30s ease-in-out infinite; /* 添加缩放动画 */
+}
+
+
+@keyframes slowZooEnd {
+  0% {
+    background-size: 100% 100%; 
+  }
+  100% {
+    background-size: 300% 300%; 
+  }
+}
+
+
+#endScreen2 {
+  text-align: center;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+#endScreenBox {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  top: -90px;
+}
+
+#FinalScore {
+  border: 1px solid rgb(255, 255, 255);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.346);
+  width: 60%;
+  padding: 1px;
+}
+
+#endMessage.won, #endMessage.lost {
+  text-align: center;
+  font-size: 3.5rem;
+  color: rgb(255, 242, 0);
+  position: relative;
+  top: 100px;
+}
+
+#endMessage.won {
+  background-image: url('/Assets/Img/group2.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  filter: drop-shadow(5px 5px 10px rgba(0, 247, 255, 0.726));
+  animation: bounceRotation 2s ease-in-out infinite;
+}
+@keyframes bounceRotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  70% {
+    transform: rotate(0deg);
+  }
+  80% {
+    transform: rotate(3deg);
+  }
+  90% {
+    transform: rotate(-3deg);
+  }
+  100% {
+    transform: rotate(3deg);
+  }
+}
+#endMessage.lost {
+  background-image: url('/Assets/Img/group.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.5));
+  animation: whiteout 4s infinite ease-in-out;
+}
+
+@keyframes whiteout {
+  0% {filter: brightness(0.9) grayscale(1%) contrast(80%); 
+    transform: rotate(0deg);
+  }
+  70% {
+    transform: rotate(0deg);
+  }
+  80% {
+    transform: rotate(3deg);
+  }
+  90% {
+    transform: rotate(-3deg);
+  }
+  100% { filter: brightness(0.5) grayscale(100%) contrast(120%);
+    transform: rotate(3deg);
+  }
+}
+
+#newGamePoints {
+  font-size: 2.8rem;
+  font-style: italic;
+  color: rgb(34, 255, 0);
+  margin: 10px 0;
+  opacity: 1;
+  visibility: hidden;
+}
+
+#newGamePoints.points-gain {
+  visibility: visible;
+  animation: pointsGain 2s ease-in-out forwards;
+}
+
+#newGamePoints.halo-blink {
+  animation: haloBlink 1.5s infinite ease-in-out;
+}
+
+@keyframes pointsGain {
+  0% { opacity: 0; transform: scale(0.8); color: yellow; }
+  50% { opacity: 1; transform: scale(1.1); color: #ffea00; text-shadow: 2px 2px 10px #ffea00; }
+  100% { opacity: 1; transform: scale(1); color: yellow; text-shadow: 2px 2px 5px #000000d9; }
+}
+
+@keyframes haloBlink {
+  0% { text-shadow: 2px 2px 5px #000000d9, 0 0 5px yellow; }
+  50% { text-shadow: 2px 2px 10px #000000d9, 0 0 10px yellow, 0 0 15px #ffea00; }
+  100% { text-shadow: 2px 2px 5px #000000d9, 0 0 5px yellow; }
+}
+
+#endMessage {
+  font-size: 4rem;
+  padding: 20px;
+  background-size: cover;
+  background-position: center;
+  min-height: 400px;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+}
+
+/* 动画和过渡 */
+#startScreen, #gameScreen, #endScreen {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.3s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.fade-out {
+  animation: fadeOutShrink 0.4s ease-in-out forwards;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeOutShrink {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.2); opacity: 0.1; }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0.1; }
+  100% { opacity: 1; }
+}
+
+.ball-small.blink {
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.ball-small.blink:nth-child(odd) { animation-delay: 0.5s; }
+.ball-small.blink:nth-child(even) { animation-delay: 1s; }
+
+/* 移动端优化 */
+@media (max-width: 680px) {
+  #gameScreen2 {
+    height: auto;
+    padding: 10px;
+  }
+
+  #buttonZone {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .playerChoice, .cpuChoice {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .playerChoice button, .cpuChoice button {
+    width: 50px;
+    height: 50px;
+    margin: 3px;
+  }
+
+  #roundResult {
+    padding: 10px 0;
+  }
+
+  #versus {
+    margin: 10px 0;
+  }
+}
+
+#objD-popup {
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  width: 70%;
+  height: 70%;
+  background-size: cover;
+  background-position: center;
+  z-index: 10;
+  animation: popupAppear 1s ease-in-out forwards, glowPulse 1.5s infinite ease-in-out;
+}
+
+@keyframes glowPulse {
+  0% { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7)); }
+  50% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 1)); }
+  100% { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7)); }
+}
+
+.transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.battle-region {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 80%;
+  height: 90px;
+  background: linear-gradient(90deg, rgba(255, 165, 0, 0.5), rgba(255, 215, 0, 0.7), rgba(255, 165, 0, 0.6));
+  transform: translateY(-50%) skewX(-30deg);
+  opacity: 0;
+  animation: expandRegion 1s ease-out forwards; /* 总时长 1 秒 */
+  box-shadow: 0 0 20px rgba(255, 165, 0, 0.8);
+  border: 5px double  rgba(246, 255, 0, 0.7);
+  outline: 2px solid rgba(255, 230, 0, 0.6);
+}
+
+@keyframes expandRegion {
+  0% { opacity: 0; width: 0; left: 50%; }
+  10% { opacity: 0.6; width: 80%; left: 10%; } /* 第一次短时放大，0.2s */
+
+  20% { opacity: 1; width: 20%; left: 40%; } /* 第一次短时放大，0.2s */
+  30% { opacity: 0.6; width: 80%; left: 10%; } /* 第一次短时放大，0.2s */
+
+  40% { opacity: 1; width: 40%; left: 30%; } /* 第二次短时放大，0.2s */
+  100% { opacity: 1; width: 80%; left: 10%; } /* 正常展开，0.6s */
+}
+
+.battle-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5rem;
+  color: white;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.929), 2px 2px 5px rgba(255, 238, 0, 0.835);
+}
+
+.battle-text.burst {
+  animation: burstText 0.3s ease-in-out forwards, shadowPulse 0.3s ease-in-out forwards;
+}
+
+@keyframes burstText {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.5); } /* 爆发放大 */
+  100% { transform: translate(-50%, -50%) scale(1); } /* 回弹 */
+}
+
+@keyframes shadowPulse {
+  0% { text-shadow: 0 0 10px rgb(0, 255, 247), 2px 2px 5px rgb(255, 119, 0); }
+  50% { text-shadow: 0 0 20px rgba(255, 255, 255, 1), 4px 4px 10px rgb(255, 238, 0); } /* 阴影增强 */
+  100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 2px 2px 5px rgb(0, 255, 251); } /* 恢复 */
+}
+
+.battle-region.fade-out {
+  animation: fadeOut 0.5s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; filter: blur(0px); }
+  50% { opacity: 0.5; filter: blur(5px); }
+  100% { opacity: 0; filter: blur(10px); }
+}
+
+/* 退出按钮 */
+.exit-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 10%;
+  border: 2px solid rgba(209, 209, 209, 0.384);
+  width: 30px;
+  height: 30px;
+
+  font-size: 2.5rem;
+  color: white;
+  box-shadow: none;
+
+  cursor: pointer;
+  background-color: rgba(255, 0, 0, 0.2); /* 红色背景，表示退出 */
+  transition: background-color 0.3s, transform 0.3s;
+  z-index: 1000;
+}
+
+.exit-button:hover {
+  background-color: #ff6666;
+  transform: scale(1.1);
+  color:rgba(255, 255, 0, 0.8);
+}
+
+/* 模态弹窗 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* 半透明背景 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-content {
+  background-color: #011b5b44; /* 与游戏背景一致 */
+  border: 3px solid #11bca8;
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  width: 400px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.modal-content p {
+  font-size: 2rem;
+  color: #ffea00;
+  text-shadow: 2px 2px 10px #000000;
+  margin-bottom: 20px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.modal-buttons button {
+  width: 120px;
+  height: 40px;
+  font-size: 1.6rem;
+  font-weight: bold;
+  font-family: "pixelify Sans";
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 1px 1px 10px rgba(162, 255, 1, 0.944);
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+#cancelExit {
+  background-color: rgba(99, 240, 247, 0.6); /* 与游戏按钮一致 */
+  border: 2px solid rgba(255, 255, 255, 0.75);
+}
+
+#cancelExit:hover {
+  background-color: #d1ce4d;
+  color: rgb(0, 85, 255);
+  transform: scale(1.1);
+  border: 2px solid rgba(0, 255, 255, 0.75);
+}
+
+#confirmExit {
+  background-color: #ff3b3ba8; /* 红色表示确认退出 */
+  border: 2px solid rgba(255, 255, 255, 0.75);
+}
+
+#confirmExit:hover {
+  background-color: #ff6666;
+  transform: scale(1.1);
+  border: 2px solid rgba(255, 255, 255, 0.75);
+}
+
+.copyright-footer {
+
+  width: 100%;
+  text-align: center;
+  font-family: "pixelify Sans";
+  font-size: 1rem;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+  opacity: 0.6;
+}
+
+.ripple {
+  position: absolute;
+  width: 100px; 
+  height: 100px;
+  background: rgba(251, 255, 0, 0.9) url('/Assets/Img/ball.png');
+  border-radius: 50%; 
+  pointer-events: none; /* 防止涟漪干扰后续点击 */
+  transform: translate(-50%, -50%); 
+  animation: rippleEffect 1s ease-out forwards; 
+}
+
+@keyframes rippleEffect {
+  0% {
+    width: 10px;
+    height: 10px;
+    opacity: 0.8;
+  }
+  100% {
+    width: 100px; 
+    height: 100px;
+    opacity: 0; 
+  }
+}
