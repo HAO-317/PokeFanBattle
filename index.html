@@ -1,0 +1,168 @@
+<!--
+  PokéFan Battle Game
+  Copyright © 2025 [HAO LI / HAO317]
+  Licensed under the MIT License (or All Rights Reserved)
+-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PokeFanGuessBattle</title> 
+    <link rel="icon" href="data:,">
+    <script type="module" crossorigin src="/PokeFanBattle/Assets/index-BcOLxuAQ.js"></script>
+    <link rel="stylesheet" crossorigin href="/PokeFanBattle/Assets/index-CAH9BBfM.css">
+  </head>
+  <body>
+    <main>
+      <!-- v1.0 -->
+        <!-- 区域1：开始前 -->
+        <div id="startScreen" class="game-area">
+          <div id="startScreen2">
+            <div class="title-logo" alt="logo"></div>
+            <div class="ball"></div>
+            <h2>CHOOSE A GAME MODE</h2>
+            <div class="mode-buttons">
+              <button id="goal-mode">GOAL</button>
+              <button id="winInfinity">INFINITY</button>
+            </div>
+            <div id="goal-options" class="goal-options hidden">
+              <div class="scroll-container">
+                <button class="goal-option" data-wins="3">Win 3</button>
+                <button class="goal-option" data-wins="5">Win 5</button>
+                <button class="goal-option" data-wins="7">Win 7</button>
+                <button class="goal-option" data-wins="10">Win 10</button>
+              </div>
+            </div>
+            <div class="difficulty-toggle hidden">
+              <button id="difficulty-normal" class="difficulty-btn">Normal</button>
+              <button id="difficulty-hard" class="difficulty-btn">Hard</button>
+            </div>
+            <br>
+            <button id="start" class="hidden">START</button>
+          </div>
+          <div id="startSoundControl" class="sound-control"></div>
+          <div class="copyright-footer">
+            <p>© 2025 [HAO317]</p>
+          </div>      
+        </div>
+
+    </div>
+
+    <!-- 区域2：游戏中 -->
+    <div id="gameScreen" class="hidden">
+      <div id="gameScreen2" class="game-area">
+        <div class="record">
+          <p class="top-left">GAME POINTS <span id="gamePoints">0</span> ★</p>  
+          <p>TOP RECORD (Infinite Mode): <span id="highScore">0</span> Wins</p>  
+          <div class="top-right" >
+            <div id="gamerule"></div>
+            <button class="exit-button">⏏</button>
+          </div>  
+        </div>
+
+        <div id="mainZone">
+          <div class="lifeDisplay" >
+            <span id="playerlife"></span>
+          </div>
+          <div id="roundResult">
+            <h3>SCORE</h3>
+            <div id="score-ply-cpu">
+              <div class="player-score-vertikal">
+                <p class="text-type1">Player</p>
+                <span id="playerScore">0</span>
+              </div>
+              <p class="text-type2">:</p>
+              <div class="player-score-vertikal">
+                <p class="text-type1">CPU</p>
+                <span id="cpuScore">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="lifeDisplay">
+            <span id="cpulife"></span>
+          </div>
+        </div>
+    
+        <div id="versus">
+          <div class="choice-container">
+            <canvas id="playerCanvas" class="effect-canvas"></canvas>
+            <span id="playerVersus" class="choice-display"></span>
+          </div>
+          <span id="vs"></span>
+          <div class="choice-container">
+            <canvas id="cpuCanvas" class="effect-canvas"></canvas>
+            <span id="cpuVersus" class="choice-display"></span>
+          </div>
+        </div>
+    
+        <!-- 新增按钮区域 -->
+        <div id="buttonZone">
+          <div class="playerChoice">
+            <h3>PLAYER</h3>
+            <div>
+              <p>Choose a Pokémon</p>
+              <button id="objA"></button>
+              <button id="objB"></button>
+              <button id="objC"></button>
+            </div>
+
+          </div>
+          <div class="cpuChoice"> 
+            <div>
+              <p><br></p>
+              <button id="objC-cpu"></button>
+              <button id="objB-cpu"></button>
+              <button id="objA-cpu"></button>
+            </div>
+            <h3>CPU</h3>
+          </div>
+        </div>
+      </div>
+      <div id="gameSoundControl" class="sound-control"></div>
+
+      <div id="exitModal" class="modal hidden">
+        <div class="modal-content">
+          <p>Are you sure you want to exit the ongoing game?</p>
+          <div class="modal-buttons">
+            <button id="cancelExit">CANCEL</button>
+            <button id="confirmExit">CONFIRM</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+
+    <!-- 区域3：游戏结束 -->
+    <div id="endScreen" class="hidden">
+      <div id="endScreen2" class="game-area">
+        <h2 id="endMessage"></h2>
+
+        <div id="endScreenBox">
+          <h3 id="newGamePoints"></h3>
+          <p id="FinalScore" class="text-type1">Final Score</p>
+          <h2 class="text-type2">
+            <span id="finalPlayerScore">0</span> : <span id="finalCpuScore">0</span> 
+          </h2>
+         
+          <button id="restart">PLAY AGAIN</button>
+        </div>
+      </div>
+      <div id="endSoundControl" class="sound-control"></div>
+
+
+ 
+    </div>
+
+    <!-- <script type="module">
+      import { eventHandler } from './src/eventHandler.js';
+      window.addEventListener('DOMContentLoaded', () => {
+        console.log("DOM fully loaded, initializing game");
+      });
+    </script> -->
+    </main>
+  </body>
+</html>
